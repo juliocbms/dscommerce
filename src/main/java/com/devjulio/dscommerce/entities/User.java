@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "User")
+@Entity
 @Table(name = "tb_user")
 public class User {
 
