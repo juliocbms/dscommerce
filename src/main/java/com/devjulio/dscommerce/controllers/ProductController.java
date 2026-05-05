@@ -1,7 +1,9 @@
 package com.devjulio.dscommerce.controllers;
 
+import com.devjulio.dscommerce.DTO.CustomError;
 import com.devjulio.dscommerce.DTO.ProductDTO;
 import com.devjulio.dscommerce.services.ProductService;
+import com.devjulio.dscommerce.services.exceptions.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.Instant;
 
 
 @RestController
@@ -23,7 +26,7 @@ public class ProductController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> findById(@PathVariable Long id){
+    public ResponseEntity<?> findById(@PathVariable Long id){
             ProductDTO dto = productService.findById(id);
             return ResponseEntity.ok(dto);
     }
