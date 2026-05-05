@@ -2,10 +2,13 @@ package com.devjulio.dscommerce.DTO;
 
 
 import com.devjulio.dscommerce.entities.Product;
+import jakarta.validation.constraints.NotBlank;
 
 public class ProductDTO {
 
     private Long id;
+
+    @NotBlank(message = "Campo requerido")
     private String name;
     private String description;
     private Double price;
