@@ -3,6 +3,7 @@ package com.devjulio.dscommerce.services;
 import com.devjulio.dscommerce.DTO.ProductDTO;
 import com.devjulio.dscommerce.entities.Product;
 import com.devjulio.dscommerce.repositories.ProductRepository;
+import com.devjulio.dscommerce.services.exceptions.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,8 @@ public class ProductService {
     @Transactional(readOnly = true)// locking de leitura apenas para não travar o banco
     public ProductDTO findById(Long id){
 
-        Product product = productRepository.findById(id).get();
+        Product product = productRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Recurso não encontrado"));
         return new ProductDTO(product);
 
     }
