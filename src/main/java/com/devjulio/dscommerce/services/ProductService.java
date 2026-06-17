@@ -35,9 +35,9 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)// locking de leitura apenas para não travar o banco
-    public Page<ProductDTO> findAll(Pageable pageable){
+    public Page<ProductDTO> findAll(String name, Pageable pageable){
 
-        Page<Product> result = productRepository.findAll(pageable);
+        Page<Product> result = productRepository.searchByName(name, pageable);
         return result.map(x -> new ProductDTO(x));
 
     }
