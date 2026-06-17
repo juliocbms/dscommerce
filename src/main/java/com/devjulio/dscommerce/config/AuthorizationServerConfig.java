@@ -15,8 +15,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,7 +30,8 @@ import org.springframework.security.oauth2.server.authorization.authentication.O
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
-
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
@@ -63,36 +62,23 @@ public class AuthorizationServerConfig {
 	@Autowired
 	private UserDetailsService userDetailsService;
 
-    @Bean
-    @Order(2)
-    public SecurityFilterChain asSecurityFilterChain(HttpSecurity http) throws Exception {
+	@Bean
+	@Order(2)
+	public SecurityFilterChain asSecurityFilterChain(HttpSecurity http) throws Exception {
 
-        OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
-                OAuth2AuthorizationServerConfigurer.authorizationServer();
+		OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
-        http
-                .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
-                .with(authorizationServerConfigurer, authorizationServer -> authorizationServer
-                        .tokenEndpoint(tokenEndpoint -> tokenEndpoint
-                                .accessTokenRequestConverter(
-                                        new CustomPasswordAuthenticationConverter())
-                                .authenticationProvider(
-                                        new CustomPasswordAuthenticationProvider(
-                                                authorizationService(),
-                                                tokenGenerator(),
-                                                userDetailsService,
-                                                passwordEncoder()
-                                        )
-                                )
-                        )
-                )
-                .authorizeHttpRequests(authorize ->
-                        authorize.anyRequest().authenticated())
-                .oauth2ResourceServer(oauth2 ->
-                        oauth2.jwt(Customizer.withDefaults()));
+		// @formatter:off
+		http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+			.tokenEndpoint(tokenEndpoint -> tokenEndpoint
+				.accessTokenRequestConverter(new CustomPasswordAuthenticationConverter())
+				.authenticationProvider(new CustomPasswordAuthenticationProvider(authorizationService(), tokenGenerator(), userDetailsService, passwordEncoder())));
 
-        return http.build();
-    }
+		http.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt(Customizer.withDefaults()));
+		// @formatter:on
+
+		return http.build();
+	}
 
 	@Bean
 	public OAuth2AuthorizationService authorizationService() {

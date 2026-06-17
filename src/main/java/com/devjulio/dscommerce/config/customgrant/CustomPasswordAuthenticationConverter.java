@@ -14,7 +14,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.*;
 
-public class CustomPasswordAuthenticationConverter implements AuthenticationConverter {
+public class  CustomPasswordAuthenticationConverter implements AuthenticationConverter {
 
 	@Nullable
 	@Override
@@ -36,18 +36,18 @@ public class CustomPasswordAuthenticationConverter implements AuthenticationConv
 		}
 		
 		// username (REQUIRED)
-        String username = parameters.getFirst("username");
-        if (!StringUtils.hasText(username) ||
-                parameters.get("username").size() != 1) {
-            throw new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_REQUEST);
-        }
+		String username = parameters.getFirst(OAuth2ParameterNames.USERNAME);
+		if (!StringUtils.hasText(username) ||
+				parameters.get(OAuth2ParameterNames.USERNAME).size() != 1) {
+			throw new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_REQUEST);
+		}
 		
 		// password (REQUIRED)
-        String password = parameters.getFirst("password");
-        if (!StringUtils.hasText(password) ||
-                parameters.get("password").size() != 1) {
-            throw new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_REQUEST);
-        }
+		String password = parameters.getFirst(OAuth2ParameterNames.PASSWORD);
+		if (!StringUtils.hasText(password) ||
+				parameters.get(OAuth2ParameterNames.PASSWORD).size() != 1) {
+			throw new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_REQUEST);
+		}
 				
 		Set<String> requestedScopes = null;
 		if (StringUtils.hasText(scope)) {
