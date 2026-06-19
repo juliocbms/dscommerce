@@ -1,6 +1,7 @@
 package com.devjulio.dscommerce.services;
 
 import com.devjulio.dscommerce.DTO.ProductDTO;
+import com.devjulio.dscommerce.DTO.ProductMinDTO;
 import com.devjulio.dscommerce.entities.Product;
 import com.devjulio.dscommerce.repositories.ProductRepository;
 import com.devjulio.dscommerce.services.exceptions.DatabaseException;
@@ -35,10 +36,10 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)// locking de leitura apenas para não travar o banco
-    public Page<ProductDTO> findAll(String name, Pageable pageable){
+    public Page<ProductMinDTO> findAll(String name, Pageable pageable){
 
         Page<Product> result = productRepository.searchByName(name, pageable);
-        return result.map(x -> new ProductDTO(x));
+        return result.map(x -> new ProductMinDTO(x));
 
     }
 

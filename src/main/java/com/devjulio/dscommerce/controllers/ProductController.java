@@ -2,6 +2,7 @@ package com.devjulio.dscommerce.controllers;
 
 import com.devjulio.dscommerce.DTO.CustomError;
 import com.devjulio.dscommerce.DTO.ProductDTO;
+import com.devjulio.dscommerce.DTO.ProductMinDTO;
 import com.devjulio.dscommerce.services.ProductService;
 import com.devjulio.dscommerce.services.exceptions.ResourceNotFoundException;
 import jakarta.validation.Valid;
@@ -34,8 +35,8 @@ public class ProductController {
     }
 
     @GetMapping()
-    public ResponseEntity<Page<ProductDTO>> findAll(@Valid @RequestParam(name = "name", defaultValue = "") String name,Pageable pageable){
-        Page<ProductDTO> dto = productService.findAll(name, pageable);
+    public ResponseEntity<Page<ProductMinDTO>> findAll(@Valid @RequestParam(name = "name", defaultValue = "") String name, Pageable pageable){
+        Page<ProductMinDTO> dto = productService.findAll(name, pageable);
         return ResponseEntity.ok(dto);
     }
 
