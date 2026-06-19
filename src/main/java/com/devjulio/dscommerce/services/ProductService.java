@@ -1,8 +1,11 @@
 package com.devjulio.dscommerce.services;
 
+import com.devjulio.dscommerce.DTO.CategoryDTO;
 import com.devjulio.dscommerce.DTO.ProductDTO;
 import com.devjulio.dscommerce.DTO.ProductMinDTO;
+import com.devjulio.dscommerce.entities.Category;
 import com.devjulio.dscommerce.entities.Product;
+import com.devjulio.dscommerce.repositories.CategoryRepository;
 import com.devjulio.dscommerce.repositories.ProductRepository;
 import com.devjulio.dscommerce.services.exceptions.DatabaseException;
 import com.devjulio.dscommerce.services.exceptions.ResourceNotFoundException;
@@ -22,8 +25,11 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public ProductService(ProductRepository productRepository) {
+    private final CategoryRepository categoryRepository;
+
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Transactional(readOnly = true)// locking de leitura apenas para não travar o banco
@@ -89,5 +95,11 @@ public class ProductService {
         entity.setDescription(dto.getDescription());
         entity.setPrice(dto.getPrice());
         entity.setImgUrl(dto.getImgUrl());
+
+        entity.getCategories().clear();
+        for (CategoryDTO catDto: dto.getCategories()){
+            Category cat = categoryRepository.getReferenceById(catDto.getId());
+            entity.getCategories().add(cat);
+        }
     }
 }
