@@ -3,9 +3,7 @@ package com.devjulio.dscommerce.DTO;
 
 import com.devjulio.dscommerce.entities.Category;
 import com.devjulio.dscommerce.entities.Product;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +21,11 @@ public class ProductDTO {
     private String description;
 
     @Positive(message = "O preço deve ser positivo")
+    @NotNull(message = "Campo requirido")
     private Double price;
     private String imgUrl;
 
+    @NotEmpty(message = "Deve ter pelo menos uma categoria")
     private List<CategoryDTO> categories = new ArrayList<>();
 
     public ProductDTO() {
